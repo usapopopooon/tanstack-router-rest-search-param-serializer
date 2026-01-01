@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="TanStack Router REST search param serializer">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"></stop>
+      <stop offset="100%" stop-color="#111827"></stop>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"></stop>
+      <stop offset="100%" stop-color="#0b1020"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect x="24" y="24" width="464" height="464" rx="96" fill="url(#bg)"></rect>
+
+  <!-- title -->
+  <text x="256" y="120" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="42" font-weight="900" fill="#e5e7eb">
+    TanStack Router
+  </text>
+
+  <!-- left: JSON -->
+  <g>
+    <rect x="72" y="176" width="168" height="176" rx="32" fill="url(#panel)" stroke="#475569" stroke-width="6"></rect>
+    <text x="156" y="292" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace" font-size="84" font-weight="900" fill="#fb7185">{}</text>
+    <text x="156" y="338" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="16" font-weight="800" fill="#94a3b8">JSON</text>
+  </g>
+
+  <!-- right: REST query -->
+  <g>
+    <rect x="272" y="176" width="168" height="176" rx="32" fill="url(#panel)" stroke="#475569" stroke-width="6"></rect>
+    <text x="356" y="290" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace" font-size="78" font-weight="900" fill="#22c55e">?&amp;=</text>
+    <text x="356" y="338" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="16" font-weight="800" fill="#94a3b8">REST query</text>
+  </g>
+
+  <!-- arrow -->
+  <g stroke="#e5e7eb" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M240 264h32"></path>
+    <path d="M260 238l28 26-28 26"></path>
+  </g>
+
+  <!-- subtitle (2 lines) -->
+  <text x="256" y="418" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="28" font-weight="900" fill="#e5e7eb">
+    REST search param
+  </text>
+  <text x="256" y="452" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-size="28" font-weight="900" fill="#e5e7eb">
+    serializer
+  </text>
+</svg>

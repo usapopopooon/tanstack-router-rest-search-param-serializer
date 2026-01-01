@@ -1,0 +1,23 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "usapopo",
+    "tanstack",
+    "serializer",
+    "booleans",
+    "stringify",
+    "stringified",
+    "tsup",
+    "vitest",
+    "esmodule",
+    "typeof",
+    "nonempty",
+    "Bname"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "package-lock.json"
+  ]
+}
