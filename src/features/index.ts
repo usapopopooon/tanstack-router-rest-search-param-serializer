@@ -19,3 +19,6 @@ export * from './duplicateKeyArrays'
 
 // Numeric index arrays (items[0]=a)
 export * from './numericIndexArrays'
+
+// JSON fallback for backward compatibility
+export * from './jsonFallback'

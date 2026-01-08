@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2025-01-02
+## [0.2.0] - 2026-01-08
+
+### Added
+
+- `jsonFallback` option for backward compatibility with TanStack Router's default JSON format URLs
+  - Parses JSON arrays: `["1","2"]` → `['1', '2']`
+  - Parses JSON strings: `"123"` → `'123'`
+  - Parses JSON objects: `{"name":"john"}` → `{ name: 'john' }`
+- New helper functions: `tryParseJsonValue`, `isJsonEncodedValue`
+
+## [0.1.0] - 2026-01-02
 
 ### Added
 
