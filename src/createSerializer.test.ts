@@ -120,10 +120,98 @@ describe('createSerializer', () => {
       const result = parseSearchParams('id=1&id=2')
       expect(result.id).toBe('1')
     })
+
+    it('enables jsonFallback for backward compatibility', () => {
+      const { parseSearchParams } = createSerializer({
+        jsonFallback: true,
+      })
+      // JSON array from TanStack Router default
+      expect(parseSearchParams('ids=%5B%221%22%2C%222%22%5D')).toEqual({
+        ids: ['1', '2'],
+      })
+      // JSON string from TanStack Router default
+      expect(parseSearchParams('code=%22123%22')).toEqual({
+        code: '123',
+      })
+      // JSON object from TanStack Router default
+      expect(parseSearchParams('user=%7B%22name%22%3A%22john%22%7D')).toEqual({
+        user: { name: 'john' },
+      })
+    })
+
+    it('does not parse JSON when jsonFallback is disabled (default)', () => {
+      const { parseSearchParams } = createSerializer()
+      // JSON values are treated as regular strings with comma separation
+      const result = parseSearchParams('ids=%5B%221%22%2C%222%22%5D')
+      // ["1","2"] is split by comma into ['["1"', '"2"]']
+      expect(result.ids).toEqual(['["1"', '"2"]'])
+    })
+
+    it('jsonFallback handles mixed REST and JSON format params', () => {
+      const { parseSearchParams } = createSerializer({
+        jsonFallback: true,
+      })
+      // Mix of REST format and JSON format
+      const result = parseSearchParams(
+        'name=john&tags=%5B%22a%22%2C%22b%22%5D&active=true',
+      )
+      expect(result).toEqual({
+        name: 'john',
+        tags: ['a', 'b'],
+        active: true,
+      })
+    })
+
+    it('jsonFallback with nested objects parses JSON within nested structure', () => {
+      const { parseSearchParams } = createSerializer({
+        jsonFallback: true,
+        nestedObjects: true,
+      })
+      // Nested object with JSON value
+      const result = parseSearchParams(
+        'filter[ids]=%5B%221%22%2C%222%22%5D&filter[name]=test',
+      )
+      expect(result).toEqual({
+        filter: {
+          ids: ['1', '2'],
+          name: 'test',
+        },
+      })
+    })
+
+    it('jsonFallback handles invalid JSON gracefully', () => {
+      const { parseSearchParams } = createSerializer({
+        jsonFallback: true,
+      })
+      // Invalid JSON should be treated as regular string
+      const result = parseSearchParams('data=%5Binvalid')
+      expect(result.data).toBe('[invalid')
+    })
+
+    it('jsonFallback parses JSON boolean values', () => {
+      const { parseSearchParams } = createSerializer({
+        jsonFallback: true,
+        booleanStrings: false, // Disable boolean string conversion
+      })
+      // JSON true/false are different from string "true"/"false"
+      // With jsonFallback, "true" (JSON string) should be parsed as string 'true'
+      const result = parseSearchParams('flag=%22true%22')
+      expect(result.flag).toBe('true')
+    })
+
+    it('jsonFallback takes precedence over comma-separated arrays', () => {
+      const { parseSearchParams } = createSerializer({
+        jsonFallback: true,
+        commaSeparatedArrays: true,
+      })
+      // JSON array should be parsed as JSON, not split by comma
+      const result = parseSearchParams('ids=%5B%221%22%2C%222%22%5D')
+      expect(result.ids).toEqual(['1', '2'])
+    })
   })
 
   describe('preset constants', () => {
-    it('FULL_FEATURES enables all features', () => {
+    it('FULL_FEATURES enables all features except jsonFallback', () => {
       expect(FULL_FEATURES).toEqual({
         commaSeparatedArrays: true,
         booleanStrings: true,
@@ -131,6 +219,7 @@ describe('createSerializer', () => {
         phpArrays: true,
         duplicateKeyArrays: true,
         numericIndexArrays: true,
+        jsonFallback: false,
       })
     })
 
@@ -142,6 +231,7 @@ describe('createSerializer', () => {
         phpArrays: false,
         duplicateKeyArrays: false,
         numericIndexArrays: false,
+        jsonFallback: false,
       })
     })
   })

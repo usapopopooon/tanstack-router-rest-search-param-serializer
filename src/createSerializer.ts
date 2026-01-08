@@ -3,6 +3,7 @@ import {
   isCommaSeparatedValue,
   parseCommaSeparatedArray,
 } from './features/commaSeparatedArrays'
+import { tryParseJsonValue } from './features/jsonFallback'
 import { flattenObject } from './features/nestedObjects/flatten'
 import { parseNestedKey } from './features/nestedObjects/parseKey'
 import { setNestedValue } from './features/nestedObjects/setValue'
@@ -23,6 +24,8 @@ export type SerializerFeatures = {
   duplicateKeyArrays?: boolean
   /** Numeric index arrays items[0]=a (default: true) */
   numericIndexArrays?: boolean
+  /** JSON fallback for backward compatibility with TanStack Router default URLs (default: false) */
+  jsonFallback?: boolean
 }
 
 /**
@@ -35,6 +38,7 @@ export const FULL_FEATURES: Required<SerializerFeatures> = {
   phpArrays: true,
   duplicateKeyArrays: true,
   numericIndexArrays: true,
+  jsonFallback: false,
 }
 
 /**
@@ -47,6 +51,7 @@ export const SIMPLE_FEATURES: Required<SerializerFeatures> = {
   phpArrays: false,
   duplicateKeyArrays: false,
   numericIndexArrays: false,
+  jsonFallback: false,
 }
 
 /**
@@ -139,12 +144,20 @@ export const createSerializer = (features: SerializerFeatures = {}) => {
 }
 
 /**
- * Apply value transformations (boolean, comma-separated arrays)
+ * Apply value transformations (boolean, comma-separated arrays, JSON fallback)
  */
 const applyValueTransforms = (
   value: string,
   opts: Required<SerializerFeatures>,
 ): unknown => {
+  // JSON fallback (for backward compatibility with TanStack Router default URLs)
+  if (opts.jsonFallback) {
+    const jsonParsed = tryParseJsonValue(value)
+    if (jsonParsed !== value) {
+      return jsonParsed
+    }
+  }
+
   if (opts.booleanStrings) {
     if (value === 'true') return true
     if (value === 'false') return false

@@ -36,6 +36,7 @@ For more details, see the [blog post (Japanese)](https://zenn.dev/litalico/artic
 - [Supported Formats](#supported-formats)
 - [Custom Serializer](#custom-serializer)
   - [Feature Options](#feature-options)
+  - [JSON Fallback](#json-fallback)
   - [Presets](#presets)
 - [Zod Helpers](#zod-helpers)
   - [commaSeparatedArray](#commaseparatedarray)
@@ -160,18 +161,34 @@ const custom = createSerializer({
 
 ### Feature Options
 
-| Option                 | Default | Description                               |
-| ---------------------- | ------- | ----------------------------------------- |
-| `commaSeparatedArrays` | `true`  | Parse comma-separated arrays              |
-| `booleanStrings`       | `true`  | Convert `"true"` / `"false"` to boolean   |
-| `nestedObjects`        | `true`  | Rails-style nested objects                |
-| `phpArrays`            | `true`  | PHP-style arrays `ids[]=1`                |
-| `duplicateKeyArrays`   | `true`  | Duplicate key arrays `ids=1&ids=2`        |
-| `numericIndexArrays`   | `true`  | Numeric index arrays `items[0]=a`         |
+| Option                 | Default | Description                                                    |
+| ---------------------- | ------- | -------------------------------------------------------------- |
+| `commaSeparatedArrays` | `true`  | Parse comma-separated arrays                                   |
+| `booleanStrings`       | `true`  | Convert `"true"` / `"false"` to boolean                        |
+| `nestedObjects`        | `true`  | Rails-style nested objects                                     |
+| `phpArrays`            | `true`  | PHP-style arrays `ids[]=1`                                     |
+| `duplicateKeyArrays`   | `true`  | Duplicate key arrays `ids=1&ids=2`                             |
+| `numericIndexArrays`   | `true`  | Numeric index arrays `items[0]=a`                              |
+| `jsonFallback`         | `false` | Parse JSON-encoded values for backward compatibility           |
+
+### JSON Fallback
+
+Enable `jsonFallback` to parse JSON-encoded values from TanStack Router's default format. This is useful for backward compatibility when migrating from JSON to REST format.
+
+```tsx
+const { parseSearchParams, stringifySearchParams } = createSerializer({
+  jsonFallback: true,
+})
+
+// Parses TanStack Router default JSON format:
+// ?ids=%5B%221%22%2C%222%22%5D (["1","2"]) → { ids: ['1', '2'] }
+// ?code=%22123%22 ("123") → { code: '123' }
+// ?user=%7B%22name%22%3A%22john%22%7D ({"name":"john"}) → { user: { name: 'john' } }
+```
 
 ### Presets
 
-- **`FULL_FEATURES`**: All features enabled (default)
+- **`FULL_FEATURES`**: All features enabled except `jsonFallback`
 - **`SIMPLE_FEATURES`**: Standard format + boolean conversion only
 
 ## Zod Helpers
