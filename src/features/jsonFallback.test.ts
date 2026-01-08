@@ -1,7 +1,103 @@
 import { describe, it, expect } from 'vitest'
-import { tryParseJsonValue, isJsonEncodedValue } from './jsonFallback'
+import {
+  tryParseJsonValue,
+  isJsonEncodedValue,
+  isJsonArrayValue,
+  isJsonStringValue,
+  isJsonObjectValue,
+} from './jsonFallback'
 
 describe('jsonFallback', () => {
+  describe('isJsonArrayValue', () => {
+    it('returns true for JSON array', () => {
+      expect(isJsonArrayValue('["1","2"]')).toBe(true)
+      expect(isJsonArrayValue('[]')).toBe(true)
+      expect(isJsonArrayValue('[1,2,3]')).toBe(true)
+    })
+
+    it('returns false for non-array values', () => {
+      expect(isJsonArrayValue('hello')).toBe(false)
+      expect(isJsonArrayValue('"string"')).toBe(false)
+      expect(isJsonArrayValue('{}')).toBe(false)
+      expect(isJsonArrayValue('')).toBe(false)
+    })
+
+    it('returns false for unclosed brackets', () => {
+      expect(isJsonArrayValue('[unclosed')).toBe(false)
+      expect(isJsonArrayValue('unclosed]')).toBe(false)
+    })
+  })
+
+  describe('isJsonStringValue', () => {
+    it('returns true for JSON string', () => {
+      expect(isJsonStringValue('"123"')).toBe(true)
+      expect(isJsonStringValue('""')).toBe(true)
+      expect(isJsonStringValue('"hello world"')).toBe(true)
+    })
+
+    it('returns false for non-string values', () => {
+      expect(isJsonStringValue('hello')).toBe(false)
+      expect(isJsonStringValue('[]')).toBe(false)
+      expect(isJsonStringValue('{}')).toBe(false)
+      expect(isJsonStringValue('')).toBe(false)
+    })
+
+    it('returns false for unclosed quotes', () => {
+      expect(isJsonStringValue('"unclosed')).toBe(false)
+      expect(isJsonStringValue('unclosed"')).toBe(false)
+    })
+  })
+
+  describe('isJsonObjectValue', () => {
+    it('returns true for JSON object', () => {
+      expect(isJsonObjectValue('{"name":"john"}')).toBe(true)
+      expect(isJsonObjectValue('{}')).toBe(true)
+      expect(isJsonObjectValue('{"a":1,"b":2}')).toBe(true)
+    })
+
+    it('returns false for non-object values', () => {
+      expect(isJsonObjectValue('hello')).toBe(false)
+      expect(isJsonObjectValue('[]')).toBe(false)
+      expect(isJsonObjectValue('"string"')).toBe(false)
+      expect(isJsonObjectValue('')).toBe(false)
+    })
+
+    it('returns false for unclosed braces', () => {
+      expect(isJsonObjectValue('{unclosed')).toBe(false)
+      expect(isJsonObjectValue('unclosed}')).toBe(false)
+    })
+  })
+
+  describe('isJsonEncodedValue', () => {
+    it('returns true for JSON array', () => {
+      expect(isJsonEncodedValue('["1","2"]')).toBe(true)
+      expect(isJsonEncodedValue('[]')).toBe(true)
+    })
+
+    it('returns true for JSON string', () => {
+      expect(isJsonEncodedValue('"123"')).toBe(true)
+      expect(isJsonEncodedValue('""')).toBe(true)
+    })
+
+    it('returns true for JSON object', () => {
+      expect(isJsonEncodedValue('{"name":"john"}')).toBe(true)
+      expect(isJsonEncodedValue('{}')).toBe(true)
+    })
+
+    it('returns false for regular values', () => {
+      expect(isJsonEncodedValue('hello')).toBe(false)
+      expect(isJsonEncodedValue('123')).toBe(false)
+      expect(isJsonEncodedValue('true')).toBe(false)
+      expect(isJsonEncodedValue('')).toBe(false)
+    })
+
+    it('returns false for partial matches', () => {
+      expect(isJsonEncodedValue('[unclosed')).toBe(false)
+      expect(isJsonEncodedValue('"unclosed')).toBe(false)
+      expect(isJsonEncodedValue('{unclosed')).toBe(false)
+    })
+  })
+
   describe('tryParseJsonValue', () => {
     describe('JSON arrays', () => {
       it('parses JSON array of strings', () => {
@@ -77,36 +173,6 @@ describe('jsonFallback', () => {
       it('returns empty string as-is', () => {
         expect(tryParseJsonValue('')).toBe('')
       })
-    })
-  })
-
-  describe('isJsonEncodedValue', () => {
-    it('returns true for JSON array', () => {
-      expect(isJsonEncodedValue('["1","2"]')).toBe(true)
-      expect(isJsonEncodedValue('[]')).toBe(true)
-    })
-
-    it('returns true for JSON string', () => {
-      expect(isJsonEncodedValue('"123"')).toBe(true)
-      expect(isJsonEncodedValue('""')).toBe(true)
-    })
-
-    it('returns true for JSON object', () => {
-      expect(isJsonEncodedValue('{"name":"john"}')).toBe(true)
-      expect(isJsonEncodedValue('{}')).toBe(true)
-    })
-
-    it('returns false for regular values', () => {
-      expect(isJsonEncodedValue('hello')).toBe(false)
-      expect(isJsonEncodedValue('123')).toBe(false)
-      expect(isJsonEncodedValue('true')).toBe(false)
-      expect(isJsonEncodedValue('')).toBe(false)
-    })
-
-    it('returns false for partial matches', () => {
-      expect(isJsonEncodedValue('[unclosed')).toBe(false)
-      expect(isJsonEncodedValue('"unclosed')).toBe(false)
-      expect(isJsonEncodedValue('{unclosed')).toBe(false)
     })
   })
 })
