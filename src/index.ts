@@ -13,6 +13,7 @@
  * - Objects in arrays: ?items[0][name]=apple&items[0][price]=100
  * - Numeric index arrays: ?items[0]=a&items[1]=b
  * - Boolean strings: "true"/"false" → true/false
+ * - JSON fallback: Parse JSON-encoded values for backward compatibility
  *
  * @example
  * // All features enabled (default)

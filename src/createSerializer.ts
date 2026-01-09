@@ -3,7 +3,7 @@ import {
   isCommaSeparatedValue,
   parseCommaSeparatedArray,
 } from './features/commaSeparatedArrays'
-import { tryParseJsonValue } from './features/jsonFallback'
+import { isJsonEncodedValue, tryParseJsonValue } from './features/jsonFallback'
 import { flattenObject } from './features/nestedObjects/flatten'
 import { parseNestedKey } from './features/nestedObjects/parseKey'
 import { setNestedValue } from './features/nestedObjects/setValue'
@@ -151,11 +151,8 @@ const applyValueTransforms = (
   opts: Required<SerializerFeatures>,
 ): unknown => {
   // JSON fallback (for backward compatibility with TanStack Router default URLs)
-  if (opts.jsonFallback) {
-    const jsonParsed = tryParseJsonValue(value)
-    if (jsonParsed !== value) {
-      return jsonParsed
-    }
+  if (opts.jsonFallback && isJsonEncodedValue(value)) {
+    return tryParseJsonValue(value)
   }
 
   if (opts.booleanStrings) {
