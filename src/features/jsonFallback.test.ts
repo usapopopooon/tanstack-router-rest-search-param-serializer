@@ -158,20 +158,72 @@ describe('jsonFallback', () => {
     })
 
     describe('non-JSON values', () => {
-      it('returns regular string as-is', () => {
+      it('returns regular string as-is (invalid JSON)', () => {
         expect(tryParseJsonValue('hello')).toBe('hello')
       })
 
-      it('returns number string as-is', () => {
-        expect(tryParseJsonValue('123')).toBe('123')
+      it('parses number string as number (valid JSON)', () => {
+        expect(tryParseJsonValue('123')).toBe(123)
       })
 
-      it('returns boolean string as-is', () => {
-        expect(tryParseJsonValue('true')).toBe('true')
+      it('parses boolean string as boolean (valid JSON)', () => {
+        expect(tryParseJsonValue('true')).toBe(true)
       })
 
-      it('returns empty string as-is', () => {
+      it('returns empty string as-is (invalid JSON)', () => {
         expect(tryParseJsonValue('')).toBe('')
+      })
+    })
+
+    describe('edge cases', () => {
+      it('parses null', () => {
+        expect(tryParseJsonValue('null')).toBe(null)
+      })
+
+      it('parses nested arrays', () => {
+        expect(tryParseJsonValue('[[1,2],[3,4]]')).toEqual([
+          [1, 2],
+          [3, 4],
+        ])
+      })
+
+      it('parses array with mixed types', () => {
+        expect(tryParseJsonValue('[1,"two",true,null]')).toEqual([
+          1,
+          'two',
+          true,
+          null,
+        ])
+      })
+
+      it('parses JSON string with escaped characters', () => {
+        expect(tryParseJsonValue('"hello\\nworld"')).toBe('hello\nworld')
+        expect(tryParseJsonValue('"say \\"hi\\""')).toBe('say "hi"')
+      })
+
+      it('parses JSON string with unicode', () => {
+        expect(tryParseJsonValue('"こんにちは"')).toBe('こんにちは')
+        expect(tryParseJsonValue('"\\u3053\\u3093"')).toBe('こん')
+      })
+
+      it('parses float numbers', () => {
+        expect(tryParseJsonValue('3.14')).toBe(3.14)
+        expect(tryParseJsonValue('-123.456')).toBe(-123.456)
+      })
+
+      it('parses negative numbers', () => {
+        expect(tryParseJsonValue('-42')).toBe(-42)
+      })
+
+      it('parses object with array value', () => {
+        expect(tryParseJsonValue('{"ids":[1,2,3]}')).toEqual({ ids: [1, 2, 3] })
+      })
+
+      it('parses array with object elements', () => {
+        expect(tryParseJsonValue('[{"a":1},{"b":2}]')).toEqual([
+          { a: 1 },
+          { b: 2 },
+        ])
       })
     })
   })

@@ -47,17 +47,9 @@ export const isJsonEncodedValue = (value: string): boolean => {
  * Returns the parsed value on success, or the original value on failure
  */
 export const tryParseJsonValue = (value: string): unknown => {
-  if (
-    isJsonArrayValue(value) ||
-    isJsonStringValue(value) ||
-    isJsonObjectValue(value)
-  ) {
-    try {
-      return JSON.parse(value)
-    } catch {
-      return value
-    }
+  try {
+    return JSON.parse(value)
+  } catch {
+    return value
   }
-
-  return value
 }
