@@ -201,7 +201,10 @@ The comma-separated format cannot distinguish between an empty array `[]` and an
 
 ### `commaSeparatedArray`
 
-Handles empty string `''` → `[]` conversion for array fields:
+Converts values parsed by the REST-compliant serializer into `z.array()`-compatible form:
+
+- Empty string `''` → empty array `[]`
+- Single string `'a'` → single-element array `['a']`
 
 ```tsx
 import { z } from 'zod'
@@ -212,6 +215,7 @@ const searchSchema = z.object({
 })
 
 // ?ids=1,2,3 → { ids: ['1', '2', '3'] }
+// ?ids=1     → { ids: ['1'] }
 // ?ids=      → { ids: [] }
 ```
 
