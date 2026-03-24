@@ -1,6 +1,6 @@
 {
   "name": "tanstack-router-rest-search-serializer",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "REST API compliant search param serializer for TanStack Router",
   "type": "module",
   "main": "./dist/index.cjs",
